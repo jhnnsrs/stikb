@@ -1,0 +1,29 @@
+version: '3.7'
+
+
+services:
+  db:
+    environment:
+      POSTGRES_MULTIPLE_DATABASES: stikb_db
+      POSTGRES_PASSWORD: fostgres
+      POSTGRES_USER: postgres
+    image: jhnnsrs/daten:next
+    labels:
+      - "arkitekt.default.service=dbnew"
+  redis:
+    image: redis:latest
+    labels:
+      - "arkitekt.default.service=redis"
+
+  stikb:
+    depends_on:
+    - redis
+    - db
+    image: jhnnsrs/stikb:latest
+    command: bash run-debug.sh
+    ports:
+      - 7766:80
+    volumes:
+      - ./configs/stikb.yaml:/workspace/config.yaml
+    labels:
+      - "arkitekt.default.service=stikb"

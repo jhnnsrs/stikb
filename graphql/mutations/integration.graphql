@@ -1,0 +1,5 @@
+mutation EnsureIntegration($token: String!) {
+  ensureIntegration(input: { token: $token }) {
+    id
+  }
+}

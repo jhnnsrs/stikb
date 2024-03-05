@@ -1,0 +1,59 @@
+projects:
+  stkib:
+    schema: http://127.0.0.1:8000/graphql
+    documents: graphql/*/**.graphql
+    extensions:
+      turms:
+        out_dir: stikb/api
+        always_resolve_interfaces: True
+        exclude_typenames: true
+        freeze:
+          enabled: true
+        options:
+          enabled: true
+          use_enum_values: true
+          extra: "forbid"
+          types:
+            - "input"
+        parsers:
+          - type: turms.parsers.polyfill.PolyfillParser
+            python_version: 3.7
+        stylers:
+          - type: turms.stylers.default.DefaultStyler
+          - type: turms.stylers.appender.AppenderStyler
+            append_fragment: "Fragment"
+        plugins:
+          - type: turms.plugins.enums.EnumsPlugin
+          - type: turms.plugins.inputs.InputsPlugin
+          - type: turms.plugins.fragments.FragmentsPlugin
+          - type: turms.plugins.operations.OperationsPlugin
+          - type: turms.plugins.funcs.FuncsPlugin
+            global_kwargs:
+              - type: stikb.rath.StikbRath
+                key: rath
+                description: "The stikb rath client"
+            definitions:
+              - type: subscription
+                is_async: True
+                use: stikb.funcs.asubscribe
+              - type: query
+                is_async: True
+                use: stikb.funcs.aexecute
+              - type: mutation
+                is_async: True
+                use: stikb.funcs.aexecute
+              - type: subscription
+                use: stikb.funcs.subscribe
+              - type: query
+                use: stikb.funcs.execute
+              - type: mutation
+                use: stikb.funcs.execute
+        processors:
+          - type: turms.processors.black.BlackProcessor
+        scalar_definitions:
+          Any: typing.Any
+          UntypedOptions: typing.Any
+          ID: rath.scalars.ID
+        additional_bases:
+          Project:
+            - stikb.traits.WandbBearer

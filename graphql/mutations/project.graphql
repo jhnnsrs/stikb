@@ -1,0 +1,6 @@
+mutation CreateProject($name: String!, $entity: String!) {
+  createProject(input: { name: $name, entity: $entity }) {
+    id
+    name
+  }
+}
